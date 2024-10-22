@@ -1,6 +1,6 @@
 import 'package:bem_estar_flutter/const/constant.dart';
 import 'package:bem_estar_flutter/screens/auth.dart';
-import 'package:bem_estar_flutter/screens/main_screen.dart';
+//import 'package:bem_estar_flutter/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: backgroundColor,
         brightness: Brightness.dark,
       ),
-      home: MainScreen(),
+      home: LoginScreen(),
     );
   }
 }

@@ -1,24 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:bem_estar_flutter/data/data-usuario.dart'; // Importa os dados de usuários
+import 'package:bem_estar_flutter/screens/main_screen.dart'; // Importa a MainScreen
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(), // Aplicando o tema escuro
-      home: LoginScreen(),
-    );
-  }
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class LoginScreen extends StatelessWidget {
+class _LoginScreenState extends State<LoginScreen> {
+  final _usernameController = TextEditingController();
+  final _senhaController = TextEditingController();
+  String? _errorMessage;
+
+  // Método de login
+  void _login() {
+    String username = _usernameController.text;
+    String senha = _senhaController.text;
+
+    // Validação de login usando os dados simulados
+    UsuariosData usuariosData = UsuariosData();
+    var usuarioValido = usuariosData.validarLogin(username, senha);
+
+    if (usuarioValido != null) {
+      // Se o login for válido, redireciona para a MainScreen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } else {
+      // Caso contrário, exibe uma mensagem de erro
+      setState(() {
+        _errorMessage = 'Usuário ou senha inválidos';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1F1F30), // Cor de fundo escura da tela
+      backgroundColor: Color(0xFF1F1F30),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -26,7 +46,7 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.asset(
-              "../assets/images/logo.png", // Caminho para a imagem do logo
+              "../assets/images/logo.png",
               height: 300,
             ),
             Text(
@@ -40,12 +60,13 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextField(
+              controller: _usernameController,
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Usuário',
                 labelStyle: TextStyle(color: Colors.white70),
                 filled: true,
-                fillColor: Color(0xFF2C2C38), // Cor de fundo do campo de texto
+                fillColor: Color(0xFF2C2C38),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -54,12 +75,13 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextField(
+              controller: _senhaController,
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Senha',
                 labelStyle: TextStyle(color: Colors.white70),
                 filled: true,
-                fillColor: Color(0xFF2C2C38), // Cor de fundo do campo de texto
+                fillColor: Color(0xFF2C2C38),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -67,14 +89,18 @@ class LoginScreen extends StatelessWidget {
               ),
               obscureText: true,
             ),
+            SizedBox(height: 20),
+            if (_errorMessage != null)
+              Text(
+                _errorMessage!,
+                style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
             SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // Ação de login
-              },
+              onPressed: _login, // Ação de login
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Color(0xFF4CAF50), // Nova propriedade para cor do botão
+                backgroundColor: Color(0xFF4CAF50),
                 padding: EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

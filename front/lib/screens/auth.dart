@@ -13,14 +13,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   // Método de login
-  void _login() {
+  void _login() async {
     String username = _usernameController.text;
     String senha = _senhaController.text;
 
     // Validação de login usando os dados simulados
     UsuariosData usuariosData = UsuariosData();
-    var usuarioValido = usuariosData.validarLogin(username, senha);
-
+    var usuarioValido = await usuariosData.validarLogin(username, senha);
+    print(usuarioValido);
     if (usuarioValido != null) {
       // Se o login for válido, redireciona para a MainScreen
       Navigator.push(

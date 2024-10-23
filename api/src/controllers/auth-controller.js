@@ -8,6 +8,7 @@ export async function authenticateWithPassword(app) {
     '/auth',
     async (request, reply) => {
       const { username, password } = request.body
+      // $2a$10$HEgHg3j2/FzqA48nTqHTx.vzKlin1neKtMYklLJy8cGvkA5kgSalG
       const userFromUsername = await prisma.users.findUnique({
         where: {
           username,
@@ -18,7 +19,7 @@ export async function authenticateWithPassword(app) {
         throw new BadRequestError('Invalid credentials.')
       }
 
-      const isPasswordValid = compare(
+      const isPasswordValid = await compare(
         password,
         userFromUsername.password,
       )

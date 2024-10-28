@@ -1,4 +1,4 @@
-import { compare, hash, hashSync, } from 'bcryptjs'
+import { compare } from 'bcryptjs'
 
 import { BadRequestError } from './../_errors/bad-request-error';
 import { prisma } from './../services/prisma';

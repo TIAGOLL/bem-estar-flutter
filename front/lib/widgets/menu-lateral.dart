@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:bem_estar_flutter/const/constant.dart';
 import 'package:bem_estar_flutter/data/data-menu-lateral.dart';
-import 'package:flutter/material.dart';
 
 class MenuLateral extends StatefulWidget {
-  const MenuLateral({super.key});
+  final int selectedIndex; // Adicione um campo para o índice selecionado
+
+  const MenuLateral({super.key, this.selectedIndex = 0});
 
   @override
   State<MenuLateral> createState() => _MenuLateralState();
@@ -13,22 +15,26 @@ class _MenuLateralState extends State<MenuLateral> {
   int selectedIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.selectedIndex; // Defina o estado inicial
+  }
+
+  @override
   Widget build(BuildContext context) {
     final data = MenuLateralData();
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       color: const Color(0xFF171821),
       child: ListView.builder(
         itemCount: data.menu.length,
-        itemBuilder: (context, index) => buildMenuEntry(data, index),
+        itemBuilder: (context, index) => buildMenuEntry(data, index, context),
       ),
     );
   }
 
-  Widget buildMenuEntry(MenuLateralData data, int index) {
+  Widget buildMenuEntry(MenuLateralData data, int index, BuildContext context) {
     final isSelected = selectedIndex == index;
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
@@ -38,9 +44,17 @@ class _MenuLateralState extends State<MenuLateral> {
         color: isSelected ? selectionColor : Colors.transparent,
       ),
       child: InkWell(
-        onTap: () => setState(() {
-          selectedIndex = index;
-        }),
+        onTap: () {
+          setState(() {
+            selectedIndex = index;
+          });
+          // Fechar o drawer e navegar para a nova tela
+          Navigator.of(context).pop(); // Fecha o drawer
+          // Usar Future.microtask para garantir que o drawer foi fechado
+          Future.microtask(() {
+            data.menu[index].function(context); // Executa a função de navegação
+          });
+        },
         child: Row(
           children: [
             Padding(

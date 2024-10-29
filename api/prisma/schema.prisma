@@ -29,10 +29,13 @@ model users {
 model scheduled_activities {
   id            Int      @id @default(autoincrement())
   users_id      Int
-  calories_lost Int
-  start_date    DateTime @default(now())
-  end_date      DateTime 
   name          String
+  calories_lost Int
+  steps         Int
+  distance      Int
+  finished      Boolean
+  start_date    DateTime @default(now())
+  end_date      DateTime
 
   user_id users @relation(fields: [users_id], references: [id])
 }

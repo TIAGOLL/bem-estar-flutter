@@ -12,23 +12,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final _senhaController = TextEditingController();
   String? _errorMessage;
 
-  // Método de login
   void _login() async {
     String username = _usernameController.text;
     String senha = _senhaController.text;
 
-    // Validação de login usando os dados simulados
     UsuariosData usuariosData = UsuariosData();
     var usuarioValido = await usuariosData.validarLogin(username, senha);
-    print(usuarioValido);
+    
     if (usuarioValido != null) {
-      // Se o login for válido, redireciona para a MainScreen
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } else {
-      // Caso contrário, exibe uma mensagem de erro
       setState(() {
         _errorMessage = 'Usuário ou senha inválidos';
       });

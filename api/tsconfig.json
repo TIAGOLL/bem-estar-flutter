@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "module": "ES6",  // ou "ESNext"
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true
+  }
+}

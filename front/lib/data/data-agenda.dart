@@ -1,25 +1,77 @@
-/*import 'package:bem_estar_flutter/model/model-agenda.dart';
-
-class DataAgenda {
-  final tarefas = const [
-    AgendaMoldel(titulo: "Corrida", data: "Hoje, 18:00 - 19:00"),
-    AgendaMoldel(titulo: "Taekwondo", data: "Amanha, 17:00 - 18:00"),
-    AgendaMoldel(titulo: "Musculacao", data: "Quarta-Feira, 07:00 - 08:00"),
-    AgendaMoldel(titulo: "Taekwondo", data: "Quinta-Feira, 17:00 - 18:00"),
-    AgendaMoldel(titulo: "Musculacao", data: "Quinta-Feira, 07:00 - 08-00")
-  ];
-}*/
 import 'dart:convert';
 import 'package:bem_estar_flutter/data/data-usuario.dart';
 import 'package:bem_estar_flutter/model/model-agenda.dart';
+import 'package:http/http.dart' as http;
 
 class DataAgenda {
   Future<List<AgendaModel>> fetchTarefas() async {
     var response = await UsuariosData().getUserData();
-    print(response);
 
     // Supondo que 'tarefas' seja uma lista de tarefas no JSON retornado
     List<dynamic> tarefasJson = response['tarefas'];
     return tarefasJson.map((data) => AgendaModel.fromJson(data)).toList();
   }
+
+  Future<dynamic> createScheduledActivity(Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3333/user-data/bruno@teste.com'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Retorna os dados da atividade criada
+    } else {
+      throw Exception('Falha ao cadastrar atividade');
+    }
+  }
 }
+
+
+
+/*
+//tentativa falha
+
+import 'dart:convert';
+import 'package:bem_estar_flutter/data/data-usuario.dart';
+import 'package:bem_estar_flutter/model/model-agenda.dart';
+import 'package:http/http.dart' as http;
+import 'package:bem_estar_flutter/model/model-usuario.dart';
+
+class DataAgenda {
+  // Busca as atividades agendadas do usuário
+  Future<List<AgendaModel>> fetchTarefas() async {
+    Usuario usuario = await UsuariosData().getUserData();
+    // Obtenha as atividades agendadas do usuário diretamente do objeto Usuario
+    List<AgendaModel> atividadesJson = usuario.scheduledActivities;
+    return atividadesJson;
+  }
+
+  // Cria uma nova atividade agendada
+  Future<dynamic> createScheduledActivity(Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3333/user-data/bruno@teste.com'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Retorna os dados da atividade criada
+    } else {
+      throw Exception('Falha ao cadastrar atividade');
+    }
+  }
+}
+
+*/
+
+
+
+
+
+
+

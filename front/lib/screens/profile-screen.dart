@@ -1,6 +1,10 @@
 import 'package:bem_estar_flutter/widgets/menu-lateral.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:bem_estar_flutter/data/data-usuario.dart';
+import 'package:bem_estar_flutter/model/model-usuario.dart';
+import 'package:bem_estar_flutter/data/data-saude.dart';
+import 'package:bem_estar_flutter/model/model-saude.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,6 +14,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late Future<Usuario> futureUsuario;
+  late Future<ModelSaude> futureSaudeData;
+
+  @override
+  void initState() {
+    super.initState();
+    futureUsuario = UsuariosData().getUserData();
+    futureSaudeData = DataSaude().fetchSaudeData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,71 +39,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(
-                      'assets/profile_picture.png'), // Substitua pelo caminho da sua imagem
-                ),
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: Text(
-                  'Seu Nome',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              buildMetricRow(Icons.local_fire_department, '305',
-                  'Calorias Queimadas', Colors.red),
-              buildMetricRow(
-                  Icons.directions_walk, '10,983', 'Passos', Colors.blue),
-              buildMetricRow(
-                  Icons.directions_run, '7 km', 'Distância', Colors.green),
-              buildMetricRow(
-                  Icons.nights_stay, '7h 48min', 'Sono', Colors.purple),
-              SizedBox(height: 20),
-              Text(
-                'Gráficos:',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                height: 200,
-                child: LineChart(LineChartData(
-                  borderData: FlBorderData(show: false),
-                  gridData: FlGridData(show: false),
-                  titlesData: FlTitlesData(show: false),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: [
-                        FlSpot(0, 2000),
-                        FlSpot(1, 4000),
-                        FlSpot(2, 6000),
-                        FlSpot(3, 8000),
-                        FlSpot(4, 10000),
+              FutureBuilder<Usuario>(
+                future: futureUsuario,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Erro: ${snapshot.error}'));
+                  } else if (!snapshot.hasData) {
+                    return Center(child: Text('Nenhum dado encontrado'));
+                  } else {
+                    final usuario = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(usuario.avatar ?? 'assets/profile_picture.png'),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            usuario.name,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
                       ],
-                      isCurved: true,
-                      color: Colors.blue,
-                      dotData: FlDotData(show: false),
-                      belowBarData: BarAreaData(show: false),
-                    )
-                  ],
-                )),
+                    );
+                  }
+                },
               ),
-              buildBarChart('Atividade', Colors.blue),
-              buildBarChart('Nutrição', Colors.orange),
-              buildBarChart('Hidratação', Colors.teal),
+              FutureBuilder<ModelSaude>(
+                future: futureSaudeData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Erro: ${snapshot.error}'));
+                  } else if (!snapshot.hasData) {
+                    return Center(child: Text('Nenhum dado de saúde encontrado'));
+                  } else {
+                    final saudeData = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildMetricRow(Icons.local_fire_department, saudeData.totalCaloriesLost.toString(), 'Calorias Queimadas', Colors.red),
+                        buildMetricRow(Icons.directions_walk, saudeData.totalSteps.toString(), 'Passos', Colors.blue),
+                        buildMetricRow(Icons.directions_run, '${saudeData.totalDistance} km', 'Distância', Colors.green),
+                        SizedBox(height: 20),
+                        Text(
+                          'Gráficos:',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: 200,
+                          child: LineChart(LineChartData(
+                            borderData: FlBorderData(show: false),
+                            gridData: FlGridData(show: false),
+                            titlesData: FlTitlesData(show: false),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: [
+                                  FlSpot(0, 2000),
+                                  FlSpot(1, 4000),
+                                  FlSpot(2, 6000),
+                                  FlSpot(3, 8000),
+                                  FlSpot(4, 10000),
+                                ],
+                                isCurved: true,
+                                color: Colors.blue,
+                                dotData: FlDotData(show: false),
+                                belowBarData: BarAreaData(show: false),
+                              )
+                            ],
+                          )),
+                        ),
+                        buildBarChart('Atividade', Colors.blue),
+                        buildBarChart('Nutrição', Colors.orange),
+                        buildBarChart('Hidratação', Colors.teal),
+                      ],
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -98,8 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildMetricRow(
-      IconData icon, String value, String label, Color color) {
+  Widget buildMetricRow(IconData icon, String value, String label, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(

@@ -1,22 +1,22 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:bem_estar_flutter/model/model-saude.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DataSaude {
-  final saudeData = const [
-    ModelSaude(
-        icone: 'assets/icons/burn.png',
-        valor: "305",
-        titulo: "Calorias perdidas"),
-    ModelSaude(
-        icone: 'assets/icons/steps.png',
-         valor: "10,983", 
-         titulo: "Passos"),
-    ModelSaude(
-        icone: 'assets/icons/distance.png', 
-        valor: "7km", 
-        titulo: "Distância"),
-    ModelSaude(
-        icone: 'assets/icons/sleep.png', 
-        valor: "7h48m", 
-        titulo: "Sono"),
-  ];
+  Future<String?> getEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_email');
+  }
+
+  Future<ModelSaude> fetchSaudeData() async {
+    final userEmail = await getEmail();
+    final response = await http.get(Uri.parse('http://localhost:3333/user-health-infos/$userEmail'));
+
+    if (response.statusCode == 200) {
+      return ModelSaude.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Falha ao carregar os dados de saúde');
+    }
+  }
 }

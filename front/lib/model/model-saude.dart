@@ -1,8 +1,19 @@
 class ModelSaude {
-  final String icone;
-  final String valor;
-  final String titulo;
+  final int totalCaloriesLost;
+  final int totalDistance;
+  final int totalSteps;
 
-  const ModelSaude(
-      {required this.icone, required this.valor, required this.titulo});
+  ModelSaude({
+    required this.totalCaloriesLost,
+    required this.totalDistance,
+    required this.totalSteps,
+  });
+
+  factory ModelSaude.fromJson(Map<String, dynamic> json) {
+    return ModelSaude(
+      totalCaloriesLost: json['totalCaloriesLost'],
+      totalDistance: json['totalDistance'],
+      totalSteps: json['totalSteps'],
+    );
+  }
 }

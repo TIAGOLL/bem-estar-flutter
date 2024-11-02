@@ -1,4 +1,3 @@
-import 'package:bem_estar_flutter/util/responsive.dart';
 import 'package:bem_estar_flutter/widgets/atividades-widget.dart';
 import 'package:bem_estar_flutter/widgets/grafico-barras.dart';
 import 'package:bem_estar_flutter/widgets/grafico-linha.dart';
@@ -18,7 +17,7 @@ class DashboardWidget extends StatelessWidget {
             const SizedBox(height: 18),
             const HeaderWidget(),
             const SizedBox(height: 18),
-            const AtividadesWidget(),
+            const HealthWidget(),
             const SizedBox(height: 18),
             const GraficoLinhaCard(),
             const SizedBox(height: 18),

@@ -1,6 +1,10 @@
 const { prisma } = require("../src/services/prisma");
 
 async function main() {
+
+  await prisma.scheduled_activities.deleteMany({}); 
+  await prisma.users.deleteMany({});
+
   await prisma.users.upsert({
     where: { email: 'tiago@gmail.com' },
     update: {},
@@ -18,7 +22,7 @@ async function main() {
             end_date: new Date((60 * 60 * 1000)),
             start_date: new Date(),
             steps: 3510,
-            finished: true,
+            finished: false,
             name: "Corrida"
           },
           {
@@ -27,7 +31,7 @@ async function main() {
             end_date: new Date((30 * 60 * 1000)), // 30 minutos atrás
             start_date: new Date(),
             steps: 4000,
-            finished: true,
+            finished: false,
             name: "Caminhada"
           },
           {
@@ -63,7 +67,7 @@ async function main() {
             end_date: new Date((90 * 60 * 1000)), // 1 hora e 30 minutos atrás
             start_date: new Date(),
             steps: 2500,
-            finished: true,
+            finished: false,
             name: "Treinamento Funcional"
           }
           ]
@@ -90,7 +94,7 @@ async function main() {
               end_date: new Date((120 * 60 * 1000)), // 2 horas atrás
               start_date: new Date(),
               steps: 4500,
-              finished: true,
+              finished: false,
               name: "Corrida Matinal"
             },
             {
@@ -108,7 +112,7 @@ async function main() {
               end_date: new Date((150 * 60 * 1000)), // 2 horas e 30 minutos atrás
               start_date: new Date(),
               steps: 3800,
-              finished: true,
+              finished: false,
               name: "Ciclismo"
             },
             {
@@ -152,7 +156,7 @@ async function main() {
               end_date: new Date((180 * 60 * 1000)), // 3 horas atrás
               start_date: new Date(),
               steps: 7500,
-              finished: true,
+              finished: false,
               name: "Caminhada Longa"
             },
             {
@@ -170,7 +174,7 @@ async function main() {
               end_date: new Date((150 * 60 * 1000)), // 2 horas e 30 minutos atrás
               start_date: new Date(),
               steps: 4200,
-              finished: true,
+              finished: false,
               name: "Pedalada"
             },
             {
@@ -188,7 +192,7 @@ async function main() {
               end_date: new Date((30 * 60 * 1000)), // 30 minutos atrás
               start_date: new Date(),
               steps: 2500,
-              finished: true,
+              finished: false,
               name: "Treinamento Funcional"
             }
           ]

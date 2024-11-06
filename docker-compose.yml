@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   pg:
@@ -8,9 +8,9 @@ services:
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=next-bem_estar_db
+      - POSTGRES_DB=bem_estar_db
   cache:
-    container_name: nest-clean-cache
+    container_name: bem-estar-cache
     image: redis
     ports:
       - 6379:6379

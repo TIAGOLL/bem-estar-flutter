@@ -187,9 +187,12 @@ class _CreateActivityScreenState extends State<CreateActivityScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _createActivity,
-                child: const Text('Criar Atividade'),
+              Hero(
+                tag: 'cadastrarAtividade',
+                child: ElevatedButton(
+                  onPressed: _createActivity,
+                  child: const Text('Criar Atividade'),
+                ),
               ),
             ],
           ),

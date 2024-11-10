@@ -17,7 +17,7 @@ class _CreateActivityScreenState extends State<CreateActivityScreen> {
   final TextEditingController _stepsController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
-  String _finished = 'false';
+  String _finished = 'Não';
   String? _userEmail;
 
   @override
@@ -49,7 +49,7 @@ class _CreateActivityScreenState extends State<CreateActivityScreen> {
 
     if (response.statusCode == 201) {
       print('Atividade criada com sucesso!');
-      Navigator.pop(context, true); 
+      Navigator.pop(context, true);
     } else {
       print('Falha ao criar atividade: ${response.statusCode}');
     }
@@ -168,7 +168,7 @@ class _CreateActivityScreenState extends State<CreateActivityScreen> {
               DropdownButtonFormField<String>(
                 value: _finished,
                 decoration: const InputDecoration(labelText: 'Finalizado'),
-                items: ['false', 'true'].map((String value) {
+                items: ['Não', 'Sim'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),

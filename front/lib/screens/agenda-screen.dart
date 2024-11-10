@@ -5,6 +5,7 @@ import 'package:bem_estar_flutter/model/model-agenda.dart';
 import 'package:bem_estar_flutter/data/data-agenda.dart';
 import 'package:bem_estar_flutter/widgets/custom-card-widget.dart';
 import 'package:intl/intl.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 
@@ -19,6 +20,7 @@ class _AgendaScreenState extends State<AgendaScreen>
     with SingleTickerProviderStateMixin {
   final data = DataAgenda();
   List<int> _removedItems = [];
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Instância do player
 
   String formatDateTime(String dateTime) {
     final DateTime parsedDate = DateTime.parse(dateTime);
@@ -39,6 +41,9 @@ class _AgendaScreenState extends State<AgendaScreen>
   }
 
   Future<void> deletarAtividade(int id) async {
+    // Reproduz o áudio ao iniciar a exclusão
+    await _audioPlayer.play(AssetSource('../../assets/audios/audio.mp3'));
+
     setState(() {
       _removedItems.add(id); // Marca o item como removido para animação
     });
@@ -158,13 +163,15 @@ class _AgendaScreenState extends State<AgendaScreen>
                                                     finalizarAtividade(
                                                         tarefa.id);
                                                   },
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     backgroundColor:
                                                         Colors.orange[900],
                                                     minimumSize:
                                                         const Size(100, 30),
                                                   ),
-                                                  child: const Text('Finalizar'),
+                                                  child:
+                                                      const Text('Finalizar'),
                                                 ),
                                           IconButton(
                                             icon: const Icon(Icons.delete,
@@ -185,11 +192,12 @@ class _AgendaScreenState extends State<AgendaScreen>
                                   child: Particles(
                                     numberOfParticles: 20,
                                     duration: const Duration(milliseconds: 400),
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    height: MediaQuery.of(context).size.height / 5,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
+                                    height:
+                                        MediaQuery.of(context).size.height / 5,
                                     speedOfParticles: 2.0,
                                     color: Colors.red,
-                           
                                   ),
                                 ),
                             ],
@@ -224,6 +232,13 @@ class _AgendaScreenState extends State<AgendaScreen>
       backgroundColor: const Color(0xFF171821),
     );
   }
+
+  @override
+  void dispose() {
+    _audioPlayer
+        .dispose(); // Libera o recurso de áudio quando o widget é destruído
+    super.dispose();
+  }
 }
 
 class Particle {
@@ -245,6 +260,7 @@ class Particle {
     color = color.withOpacity(lifetime / 100);
   }
 }
+
 class ParticlePainter extends CustomPainter {
   final List<Particle> particles;
 
@@ -284,7 +300,8 @@ class Particles extends StatefulWidget {
   _ParticlesState createState() => _ParticlesState();
 }
 
-class _ParticlesState extends State<Particles> with SingleTickerProviderStateMixin {
+class _ParticlesState extends State<Particles>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late List<Particle> _particles;
   final Random _random = Random();
